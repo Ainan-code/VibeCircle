@@ -13,10 +13,11 @@ const PORT = process.env.PORT || 5000;
 
 
 
-
-  app.use("/api/auth", authRoutes)
+app.use(express.json());
+app.use("/api/auth", authRoutes)
 
 app.listen(5000, () => {
-    console.log(`server is running on port 5000 ${PORT}`);
+    console.log(`server is running on port  ${PORT}`);
     connectMongodb();
 })
+

@@ -26,7 +26,7 @@ function authenticateToken(req, res, next) {
   if (!result.success) {
     return res.status(403).json({ error: result.error });
   }
-  req.user = result.data;
+  req.user = result.data;   // to access user data I need req.user.id
  
   next();
 }

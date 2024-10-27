@@ -7,7 +7,7 @@ import connectMongodb from "./db/dbConnection.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
-
+import notificationRoutes from "./routes/notificationRoutes.js";
 dotenv.config();
 cloudinary.config({
     cloud_name: process.env.Cloudinary_Cloud_Name,
@@ -27,7 +27,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes)
-
+app.use("/api/notifications", notificationRoutes)
 app.listen(5000, () => {
     console.log(`server is running on port  ${PORT}`);
     connectMongodb();

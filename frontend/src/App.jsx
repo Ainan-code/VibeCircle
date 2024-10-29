@@ -1,4 +1,4 @@
-import { useState } from 'react';
+
 import { Route, Routes } from 'react-router-dom';
 import Homepage from './pages/homepage/Homepage';
 import Signup from './pages/signup/SignupPage';
@@ -7,6 +7,7 @@ import Sidebar from './components/common/Sidebar';
 import RightPanel from './components/common/RightPanel';
 import NotificationPage from './pages/notification/NotificationPage';
 import ProfilePage from './pages/profile/ProfilePage';
+import {Toaster} from "react-hot-toast";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
       <Route path='/profile/:username' element={<ProfilePage/>}/>
      </Routes>
      <RightPanel/>
+     <Toaster/>
     </div>
   )
 }

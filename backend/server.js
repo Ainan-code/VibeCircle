@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { v2 as cloudinary} from "cloudinary";
+import cookieParser from "cookie-parser";
 
 import connectMongodb from "./db/dbConnection.js";
 
@@ -22,8 +23,10 @@ const PORT = process.env.PORT || 5000;
 
 
 
-
+app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes)

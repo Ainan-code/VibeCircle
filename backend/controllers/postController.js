@@ -7,7 +7,7 @@ export const createPost = async(req, res) => {
         const {text} = req.body;
         let {img} = req.body;
 
-        const userId = req.user.id.toString();
+        const userId = req.user._id.toString();
 
         const user = await User.findById(userId);
 
@@ -49,7 +49,7 @@ export const deletePost = async(req, res) => {
 
       // check if the authenticated user owns the post
 
-     if (post.user.toString() !== req.user.id.toString()) {
+     if (post.user.toString() !== req.user._id.toString()) {
         res.status(400).json({error: "You are not authorized to delete this post"});
      };
     // if the post contained an image remove the image from cloudinary
@@ -83,7 +83,7 @@ export const commentOnPost = async(req, res) => {
     try {
         const {text} = req.body;
         const postId = req.params.id;
-        const userId = req.user.id;
+        const userId = req.user._id;
 
         if(!text) {
             return res.status(400).json({error: "comment text cant be empty"})
@@ -111,7 +111,7 @@ export const commentOnPost = async(req, res) => {
 export const likeUnLikePost = async(req, res) => {
 
     try {
-        const userId = req.user.id;
+        const userId = req.user._id;
         const{id: postId} = req.params;
     
         const post = await Post.findById(postId);
@@ -211,7 +211,7 @@ export const likeUnLikePost = async(req, res) => {
 
 
  export const getFollowingPosts = async(req, res) => {
-       const userId = req.user.id;
+       const userId = req.user._id;
 
        try {   // get the current users following and check if those users have made any posts and populate their fields.
            

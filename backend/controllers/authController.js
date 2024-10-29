@@ -1,6 +1,6 @@
   import User from "../models/userModel.js";
   import bcrypt from "bcryptjs";
-  import generateAccessToken from "../utils/generateToken.js";
+  import generateTokenAndSetCookie from "../utils/generateToken.js";
 
 
 export const signup = async(req, res) => {
@@ -50,7 +50,7 @@ export const signup = async(req, res) => {
       });
 
       if(newUser) {
-       const token =     generateAccessToken(newUser._id);
+         generateTokenAndSetCookie(newUser._id, res);
          await newUser.save();
 
          return res.status(201).json({
@@ -62,7 +62,7 @@ export const signup = async(req, res) => {
             following: newUser.following,
             profileImg: newUser.profileImg,
             coverImg: newUser.coverImg,
-            token: token
+         
          })
       } else {
          res.status(400).json({
@@ -98,7 +98,7 @@ export const login = async(req, res) => {
          res.status(400).json({error: "Invalid username or password"})
       };
       
-      const token = generateAccessToken(user._id);
+      generateTokenAndSetCookie(user._id, res);
 
       return res.status(200).json({
          id: user._id,
@@ -109,7 +109,7 @@ export const login = async(req, res) => {
          following: user.following,
          profileImg: user.profileImg,
          coverImg: user.coverImg,
-         token: token
+        
 
 
       })
@@ -125,7 +125,8 @@ export const login = async(req, res) => {
 
 
  export const logout = async(req, res) => {
-   try {
+   try { 
+      res.cookie("jwt", "", { maxAge: 0 });
       res.status(200).json({
          message: " successfuly logged out"
         })
@@ -136,14 +137,14 @@ export const login = async(req, res) => {
       })
    }
 
-    // since jwt package doesnt have a method to remove on the server side the logout will be done on the client side//
+    
     
  };
 
  export const getMe = async(req, res) => {
 
   try {
-   const user = await User.findById(req.user.id).select("-password");
+   const user = await User.findById(req.user._id).select("-password");
    res.status(200).json(user)
   } catch (error) {
    console.log( "Error in getMe controller",error.message)

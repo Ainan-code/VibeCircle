@@ -29,10 +29,10 @@ export const followUnfollowUser = async(req, res) => {
     
      const { id} = req.params;
      const userToModify = await User.findById(id);
-     const currentUser = await User.findById(req.user.id);
+     const currentUser = await User.findById(req.user._id);
 
 
-     if ( id === req.user.id.toString()) {
+     if ( id === req.user._id.toString()) {
         res.status(500).json({error: "You cant follow or unfollow yourself"});
 
      }
@@ -42,20 +42,20 @@ export const followUnfollowUser = async(req, res) => {
      }
 
      const isFollowing = currentUser.following.includes(id); // check if the current user is already following the targetuser
-     const isFollowed = userToModify.followers.includes(req.user.id); // check if the current user is in the followers of target user
+     const isFollowed = userToModify.followers.includes(req.user._id); // check if the current user is in the followers of target user
 
      if(isFollowing && isFollowed) {
         // unfollow the user in that case
-        await User.findByIdAndUpdate(id, {$pull : {followers: req.user.id}});
-        await User.findByIdAndUpdate(req.user.id, {$pull : {following: id}});
+        await User.findByIdAndUpdate(id, {$pull : {followers: req.user._id}});
+        await User.findByIdAndUpdate(req.user._id, {$pull : {following: id}});
         res.status(200).json({message: "user unfollowed successfuly"})
      } else {
         // follow the user
-        await User.findByIdAndUpdate(id, {$push : {followers: req.user.id}});
-        await User.findByIdAndUpdate(req.user.id, {$push : {following: id}});
+        await User.findByIdAndUpdate(id, {$push : {followers: req.user._id}});
+        await User.findByIdAndUpdate(req.user._id, {$push : {following: id}});
 
         const newNotification = new Notification({
-            from: req.user.id,
+            from: req.user._id,
             to: id,
             type: "follow"
         })
@@ -78,7 +78,7 @@ export const followUnfollowUser = async(req, res) => {
 export const getSuggestedUsers = async(req, res) => {
       
     try {
-        const userId = req.user.id;
+        const userId = req.user._id;
         const userFollowedbyCurrentUser = await User.findById(userId).select("following");
 
         const users  = await User.aggregate([
@@ -113,7 +113,7 @@ export const updateUser = async(req, res) => {
    const { fullName, email, username, currentPassword, newPassword, bio, link } = req.body;
 	let { profileImg, coverImg } = req.body;
 
-	const userId = req.user.id;
+	const userId = req.user._id;
 
 	try {
 		let user = await User.findById(userId);

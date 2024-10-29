@@ -1,18 +1,19 @@
 import express from "express";
 import { getUserProfile, followUnfollowUser, getSuggestedUsers, updateUser } from "../controllers/userController.js";
-import authenticateToken from "../middleware/authenticateToken.js";
+
+import protectRoute from "../middleware/authenticateToken.js";
 
 const router = express.Router();
 
 
 
-router.get("/profile/:username", authenticateToken, getUserProfile);
+router.get("/profile/:username", protectRoute, getUserProfile);
 
-router.get("/suggested", authenticateToken, getSuggestedUsers)
+router.get("/suggested", protectRoute, getSuggestedUsers)
 
-router.post("/follow/:id", authenticateToken, followUnfollowUser);
+router.post("/follow/:id", protectRoute, followUnfollowUser);
 
-router.post("/update", authenticateToken, updateUser)
+router.post("/update", protectRoute, updateUser)
 
 
 

@@ -1,4 +1,4 @@
-import authenticateToken from "../middleware/authenticateToken.js";
+import protectRoute from "../middleware/authenticateToken.js";
 import express from "express";
 import { getNotifications, deleteNotifications } from "../controllers/notificationController.js";
 
@@ -6,8 +6,8 @@ import { getNotifications, deleteNotifications } from "../controllers/notificati
 const router = express.Router();
 
 
-router.get("/", authenticateToken, getNotifications);
-router.delete("/", authenticateToken, deleteNotifications);
+router.get("/", protectRoute, getNotifications);
+router.delete("/", protectRoute, deleteNotifications);
 
 
 

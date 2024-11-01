@@ -69,7 +69,7 @@ const {data:suggestedUsers, isLoading}    = useQuery({
 											follow(user._id);
 										}}
 									>
-										{ isPending ? <LoadingSpinner/> : "Follow"}
+										{ isPending ? <LoadingSpinner size="sm"/> : "Follow"}
 									</button>
 								</div>
 							</Link>

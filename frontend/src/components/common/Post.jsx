@@ -14,7 +14,7 @@ const Post = ({ post }) => {
 	const postOwner = post.user;
 
 	const {data:authUser} = useQuery({queryKey:["authUser"]});
-	const isLiked = false;
+	const isLiked = post.likes.includes(authUser._id);
 
 	const isMyPost = authUser._id === post.user._id; // show the delete icon if the post belongs to the user;
 
@@ -40,6 +40,36 @@ const Post = ({ post }) => {
 		  }
 					})
 
+
+	const {mutate: likePost, isPending : isLiking}   =  useMutation({
+			mutationFn: async() => {
+						  const res = await fetch(`/api/posts/like/${post._id}`, {
+							  method:"POST"
+						  });
+			  
+						  const data = await res.json();
+			  
+						  if (!res.ok) throw new Error(data.error);
+			  
+						  return data;
+						},
+						onSuccess: (updatedLikes) => {
+						  toast.success("post liked succesfuly");
+						    // instead of refecthing update the cache for a better user experience;
+							queryClient.setQueryData(["posts"], (oldData) => {
+								return oldData.map((likedPost) => {
+                                   if (likedPost._id === post._id) {
+									return {...likedPost, likes: updatedLikes}
+								   }
+								   return likedPost;
+								})
+							})
+						 
+						}, onError: (error) => {
+							toast.error(error.message)
+						}
+								  })				
+
 	const formattedDate = "1h";
 
 	const isCommenting = false;
@@ -54,7 +84,10 @@ const Post = ({ post }) => {
 		e.preventDefault();
 	};
 
-	const handleLikePost = () => {};
+	const handleLikePost = () => {
+		if(isLiking) return;
+		likePost();
+	};
 
 	return (
 		<>
@@ -162,7 +195,8 @@ const Post = ({ post }) => {
 								<span className='text-sm text-slate-500 group-hover:text-green-500'>0</span>
 							</div>
 							<div className='flex gap-1 items-center group cursor-pointer' onClick={handleLikePost}>
-								{!isLiked && (
+								{isLiking && <LoadingSpinner size="sm"/>}
+								{!isLiked && !isLiking && (
 									<FaRegHeart className='w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500' />
 								)}
 								{isLiked && <FaRegHeart className='w-4 h-4 cursor-pointer text-pink-500 ' />}

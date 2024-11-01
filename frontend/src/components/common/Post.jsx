@@ -43,15 +43,19 @@ const Post = ({ post }) => {
 
 	const {mutate: likePost, isPending : isLiking}   =  useMutation({
 			mutationFn: async() => {
-						  const res = await fetch(`/api/posts/like/${post._id}`, {
-							  method:"POST"
-						  });
-			  
-						  const data = await res.json();
-			  
-						  if (!res.ok) throw new Error(data.error);
-			  
-						  return data;
+						 try {
+							const res = await fetch(`/api/posts/like/${post._id}`, {
+								method:"POST"
+							});
+				
+							const data = await res.json();
+				
+							if (!res.ok) throw new Error(data.error);
+				
+							return data;
+						 } catch (error) {
+							throw new Error(error);
+						 }
 						},
 						onSuccess: (updatedLikes) => {
 						  toast.success("post liked succesfuly");
@@ -68,11 +72,52 @@ const Post = ({ post }) => {
 						}, onError: (error) => {
 							toast.error(error.message)
 						}
-								  })				
+								  });	
+								  
+    const {mutate: commentPost, isPending : isCommenting}   =  useMutation({
+			mutationFn: async() => {
+						 try {
+							const res = await fetch(`/api/posts/comment/${post._id}`, {
+								method:"POST",
+								headers: {
+								  "Content-Type": "application/json"
+								},
+								body: JSON.stringify({text:comment})
+							});
+				
+							const data = await res.json();
+				
+							if (!res.ok) throw new Error(data.error);
+				
+							return data;
+						 } catch (error) {
+							throw new Error(error)
+						 }
+						},
+						onSuccess: (updatedComments) => {
+                           toast.success("comment posted succesfuly");
+						   setComment("");
+						   // update the cache for the post to not refetch again. 
+						   queryClient.setQueryData(["posts"], (oldData) => {
+							return oldData.map((commentedPost) => {
+							   if (commentedPost._id === post._id) {
+								return {...commentedPost, comments: updatedComments}
+							   }
+							   return commentedPost;
+							})
+						})
+
+						},
+						
+						 
+						 onError: (error) => {
+							toast.error(error.message)
+						}
+								  });								  
 
 	const formattedDate = "1h";
 
-	const isCommenting = false;
+	
 
 	const handleDeletePost = () => {
 		deletePost();
@@ -82,6 +127,8 @@ const Post = ({ post }) => {
 
 	const handlePostComment = (e) => {
 		e.preventDefault();
+		if(isCommenting) return;
+		commentPost()
 	};
 
 	const handleLikePost = () => {

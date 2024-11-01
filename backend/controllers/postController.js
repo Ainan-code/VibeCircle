@@ -99,7 +99,9 @@ export const commentOnPost = async(req, res) => {
 
         await post.save();
 
-        res.status(200).json(post)
+        const updatedComments = post.comments;
+
+        res.status(200).json(updatedComments)
     } catch (error) {
         console.log("error in comment on post", error.message) ;
         res.status(500).json({error: error.message});  

@@ -116,7 +116,7 @@ const Post = ({ post }) => {
 						}
 								  });								  
 
-	const formattedDate = formatPostDate(post.createAt);
+	const formattedDate = formatPostDate(post?.createdAt);
 
 	
 

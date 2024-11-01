@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query"
 import toast from "react-hot-toast";
 import LoadingSpinner from "./LoadingSpinner";
+import { formatPostDate } from "../../utils/date";
 
 const Post = ({ post }) => {
 	const [comment, setComment] = useState("");
@@ -115,7 +116,7 @@ const Post = ({ post }) => {
 						}
 								  });								  
 
-	const formattedDate = "1h";
+	const formattedDate = formatPostDate(post.createAt);
 
 	
 
@@ -198,7 +199,7 @@ const Post = ({ post }) => {
 												<div className='avatar'>
 													<div className='w-8 rounded-full'>
 														<img
-															src={comment.user.profileImg || "/avatar-placeholder.png"}
+															src={comment.user.profileImg || "/avatar-user.png"}
 														/>
 													</div>
 												</div>

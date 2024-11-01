@@ -4,33 +4,53 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa6";
+import {toast} from "react-hot-toast";
+import {useMutation, useQuery, useQueryClient, } from "@tanstack/react-query";
+
+
 
 const NotificationPage = () => {
-	const isLoading = false;
-	const notifications = [
-		{
-			_id: "1",
-			from: {
-				_id: "1",
-				username: "johndoe",
-				profileImg: "/avatars/boy2.png",
-			},
-			type: "follow",
-		},
-		{
-			_id: "2",
-			from: {
-				_id: "2",
-				username: "janedoe",
-				profileImg: "/avatars/girl1.png",
-			},
-			type: "like",
-		},
-	];
+     
+	    const queryClient = useQueryClient()
 
-	const deleteNotifications = () => {
-		alert("All notifications deleted");
-	};
+        const {data:notifications, isLoading}     = useQuery({
+			queryKey:["notifications"],
+			queryFn: async() => {
+				try {
+					const res = await fetch("/api/notifications");
+					const data = await res.json();
+
+					if(!res.ok) throw new Error(data.error);
+
+						return data
+				} catch (error) {
+					throw new Error(error)
+				}
+			}
+		})
+
+	       const {mutate:deleteNotifications }   = useMutation({
+			mutationFn: async() => {
+				try {
+					const res = await fetch("/api/notifications", {
+						method: "DELETE"
+					});
+					const data = await res.json();
+
+					if(!res.ok) throw new Error(data.error);
+
+						return data;
+				} catch (error) {
+					throw new Error
+				}
+			}, onSuccess: () => {
+				toast.success("notifications deleted succesfuly");
+				queryClient.invalidateQueries({queryKey: ["notifications"]})
+
+			}, onError: () => {
+				toast.error(error.message);
+			}
+		   })
 
 	return (
 		<>
@@ -65,7 +85,7 @@ const NotificationPage = () => {
 							<Link to={`/profile/${notification.from.username}`}>
 								<div className='avatar'>
 									<div className='w-8 rounded-full'>
-										<img src={notification.from.profileImg || "/avatar-placeholder.png"} />
+										<img src={notification.from.profileImg || "/avatar-user.png"} />
 									</div>
 								</div>
 								<div className='flex gap-1'>

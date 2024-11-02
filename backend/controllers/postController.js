@@ -236,7 +236,7 @@ export const likeUnLikePost = async(req, res) => {
             select: "-password"
         })
 
-         res.status(500).json(FeedPosts);
+         res.status(200).json(FeedPosts);
 
        } catch (error) {
         console.log("error in getFollowingposts controller", error.message)

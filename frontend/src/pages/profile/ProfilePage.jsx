@@ -11,9 +11,11 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatMemberSinceDate } from "../../utils/date";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import toast from "react-hot-toast";
+import useUpdateProfile from "../../hooks/useupdateProfile";
 
 const ProfilePage = () => {
 	const [coverImg, setCoverImg] = useState(null);
@@ -22,13 +24,15 @@ const ProfilePage = () => {
 
 	const coverImgRef = useRef(null);
 	const profileImgRef = useRef(null);
+
+
     const{ data:authUser} =   useQuery({queryKey:["authUser"]});
 
 
 
-	      const {follow, isPending}  =  useFollow();
-	
-	
+    const {follow, isPending}  =  useFollow();
+	      
+	const queryClient = useQueryClient();
 
 	
 	const {username} = useParams();
@@ -49,10 +53,14 @@ const ProfilePage = () => {
 				throw new Error(error)
 			}
 		}
-	  })
+	  });
+
+     const {updateProfile, isUpdating} =  useUpdateProfile()
 
      const memberSince = formatMemberSinceDate(user?.createdAt);
 	  const isMyProfile = authUser?._id === user?._id;
+
+	const amIFollowing = authUser?.following.includes(user?._id);
 	
 
 	const handleImgChange = (e, state) => {
@@ -64,6 +72,7 @@ const ProfilePage = () => {
 				state === "profileImg" && setProfileImg(reader.result);
 			};
 			reader.readAsDataURL(file);
+			
 		}
 	};
       useEffect(() => {
@@ -139,15 +148,17 @@ const ProfilePage = () => {
 										className='btn btn-outline rounded-full btn-sm'
 										onClick={() => follow(user?._id)}
 									>
-										{isPending ? <LoadingSpinner size="sm"/> :"Follow"}
+										{isPending && <LoadingSpinner size="sm"/> }
+										{!isPending && amIFollowing && "unfollow"}
+										{!isPending && !amIFollowing && "follow"}
 									</button>
 								)}
 								{(coverImg || profileImg) && (
 									<button
 										className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
-										onClick={() => alert("Profile updated successfully")}
+										onClick={() => updateProfile({coverImg, profileImg})}
 									>
-										Update
+									{isUpdating ? "...loading" : "Update" }	
 									</button>
 								)}
 							</div>

@@ -14,7 +14,7 @@ export default {
 
   daisyui: {
 		themes: [
-			"retro",
+			"light", "cupcake",
 			{
 				black: {
 					...daisyUIThemes["black"],

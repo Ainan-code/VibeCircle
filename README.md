@@ -18,7 +18,7 @@ Welcome to **VibeCircle**, a modern social media platform inspired by Twitter, b
 - **Image Uploads**: Seamless image uploads via **Cloudinary**
 - **Notifications**: Real-time notifications for interactions
 - **Real-Time**: Chat and live updates with **Socket.io**
-- **Deployment**: vibecircle.onrender.com/
+- **Deployment**: https://vibecircle.onrender.com/
 
 ### Setup Instructions:
 

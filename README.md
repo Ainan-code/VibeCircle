@@ -4,7 +4,7 @@
 
 # VibeCircle - Twitter Clone | Full-Stack App (MERN)
 
-Welcome to **VibeCircle**, a modern social media platform inspired by Twitter, built with the **MERN stack**. This project leverages powerful tools and libraries like **JWT authentication**, **Socket.io** for real-time communication, and **Cloudinary** for media uploads, providing a complete social experience.
+Welcome to **VibeCircle**, a modern social media platform inspired by Twitter, built with the **MERN stack**. This project leverages powerful tools and libraries like **JWT authentication** and **Cloudinary** for media uploads, providing a complete social experience.
 
 ### Key Features:
 - **Tech Stack**: React.js, MongoDB, Node.js, Express, Tailwind CSS
@@ -17,7 +17,6 @@ Welcome to **VibeCircle**, a modern social media platform inspired by Twitter, b
 - **Profile Management**: Edit user profile details, including cover and profile images
 - **Image Uploads**: Seamless image uploads via **Cloudinary**
 - **Notifications**: Real-time notifications for interactions
-- **Real-Time**: Chat and live updates with **Socket.io**
 - **Deployment**: https://vibecircle.onrender.com/
 
 ### Setup Instructions:
